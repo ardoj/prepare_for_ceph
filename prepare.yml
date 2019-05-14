@@ -52,33 +52,6 @@
       state: directory
     with_items: "{{ fetch_dir }}"
 
-- hosts: mons
-  vars_files:
-  - env_variables
-  tasks:
-  - name: Allow Network Ports in Firewalld
-    firewalld:
-     port: "{{ item }}"
-     state: enabled
-     permanent: yes
-     immediate: yes
-    with_items: "{{ ports_mon }}"
-    become: yes
-
-- hosts: osds
-  vars_files:
-  - env_variables
-  tasks:
-  - name: Allow Network Ports in Firewalld
-    firewalld:
-     port: "{{ item }}"
-     state: enabled
-     permanent: yes
-     immediate: yes
-    with_items: "{{ ports_osd }}"
-    become: yes
-
-
   handlers:
     - name: reboot system
       reboot:
