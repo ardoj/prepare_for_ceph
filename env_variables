@@ -13,3 +13,6 @@ ports_mon:
 
 ports_osd:
 - "6800-7300/tcp"
+
+fetch_dir:
+- "/home/cephuser/fetch"

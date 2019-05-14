@@ -31,6 +31,7 @@
 
   - name: ntp to Euro clock
     shell: "ntpdate europe.pool.ntp.org"
+    ignore_errors: yes
     become: yes
   
   - name: "hwclock to sysclock"
@@ -44,6 +45,12 @@
      enabled: yes
     with_items: "{{ services }}"
     become: yes
+
+  - name: Check/create fetch directory
+    file:
+      path: "{{ item }}"
+      state: directory
+    with_items: "{{ fetch_dir }}"
 
 - hosts: mons
   vars_files:
