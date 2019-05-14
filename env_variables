@@ -1,0 +1,15 @@
+packages:
+- ntp
+- ntpdate
+- ntp-doc
+
+services:
+- firewalld
+- ntpd
+
+ports_mon:
+- "6789/tcp"
+- "3300/tcp"
+
+ports_osd:
+- "6800-7300/tcp"

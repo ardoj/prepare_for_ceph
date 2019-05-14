@@ -1,0 +1,77 @@
+---
+- hosts: all
+  vars_files:
+  - env_variables 
+  tasks:
+  - name: getenforce status
+    command: getenforce
+    register: getenforce_result
+    changed_when: "'disabled' not in getenforce_result.stdout|lower"
+    become: yes
+
+  - name: Set setenforce to zero
+    command: setenforce 0
+    when: getenforce_result is changed
+    become: yes
+
+  - name: Disable SELINUX property
+    selinux:
+      conf: /etc/selinux/config
+      state: disabled
+    notify: reboot system
+    when: getenforce_result is changed
+    become: yes
+
+  - name: Installing required packages
+    yum:
+     name: "{{ item }}"
+     state: present
+    with_items: "{{ packages }}"
+    become: yes
+
+  - name: ntp to Euro clock
+    shell: "ntpdate europe.pool.ntp.org"
+    become: yes
+  
+  - name: "hwclock to sysclock"
+    shell: "hwclock --systohc"
+    become: yes
+
+  - name: Starting and Enabling the required services
+    service:
+     name: "{{ item }}"
+     state: started
+     enabled: yes
+    with_items: "{{ services }}"
+    become: yes
+
+- hosts: mons
+  vars_files:
+  - env_variables
+  tasks:
+  - name: Allow Network Ports in Firewalld
+    firewalld:
+     port: "{{ item }}"
+     state: enabled
+     permanent: yes
+     immediate: yes
+    with_items: "{{ ports_mon }}"
+    become: yes
+
+- hosts: osds
+  vars_files:
+  - env_variables
+  tasks:
+  - name: Allow Network Ports in Firewalld
+    firewalld:
+     port: "{{ item }}"
+     state: enabled
+     permanent: yes
+     immediate: yes
+    with_items: "{{ ports_osd }}"
+    become: yes
+
+
+  handlers:
+    - name: reboot system
+      reboot:
