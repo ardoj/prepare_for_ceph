@@ -30,7 +30,7 @@
     become: yes
 
   - name: ntp to Euro clock
-    shell: "ntpdate europe.pool.ntp.org"
+    shell: "ntpdate time.enlib"
     ignore_errors: yes
     become: yes
   
@@ -38,19 +38,46 @@
     shell: "hwclock --systohc"
     become: yes
 
-  - name: Starting and Enabling the required services
-    service:
-     name: "{{ item }}"
-     state: started
-     enabled: yes
-    with_items: "{{ services }}"
-    become: yes
+  #- name: Starting and Enabling the required services
+  #  service:
+  #   name: "{{ item }}"
+  #   state: started
+  #   enabled: yes
+  #  with_items: "{{ services }}"
+  #  become: yes
+  #    key: "{{ lookup('v6tmed', '/root/.ssh/authorized_keys') }}"
 
-  - name: Check/create fetch directory
+  - name: make .ssh direcotry
+    become: yes
     file:
-      path: "{{ item }}"
+      path: "/root/.ssh"
       state: directory
-    with_items: "{{ fetch_dir }}"
+      mode: '0600'
+  - name: Copy keys file
+    become: yes
+    copy:
+      src: authorized_keys
+      dest: /root/.ssh/authorized_keys
+      owner: root
+      group: root
+      mode: '0600'
+#  - name: create empty file
+#    become: yes
+#    file:
+#      path: "/root/.ssh/authorized_keys"
+#      state: touch
+#      mode: '0600'
+#
+#  - name: put pubkey
+#    become: yes
+#    lineinfile:
+#      path: "/root/.ssh/authorized_keys"
+#      line: "{{ pubkey }}"
+#  - name: Check/create fetch directory
+#    file:
+#      path: "{{ item }}"
+#      state: directory
+#    with_items: "{{ fetch_dir }}"
 
   handlers:
     - name: reboot system
