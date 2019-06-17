@@ -54,6 +54,12 @@
       group: root
       mode: '0600'
 
+  - name: Check/create fetch directory
+    file:
+      path: "{{ item }}"
+      state: directory
+    with_items: "{{ fetch_dir }}"
+
   handlers:
     - name: reboot system
       reboot:
