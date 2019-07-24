@@ -1,0 +1,13 @@
+---
+- hosts: all
+  become: true
+  tasks:
+   - name: Backup /home to ~/backup_home.tgz
+     archive:
+       path: /home/cephuser
+       dest: ~/backup_home.tgz
+   - name: Backup /etc to ~/backup_etc.tgz
+     archive:
+       path: /etc
+       dest: ~/backup_etc.tgz
+
