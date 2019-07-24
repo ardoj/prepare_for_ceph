@@ -30,7 +30,7 @@
     become: yes
 
   - name: ntp to Euro clock
-    shell: "ntpdate europe.pool.ntp.org"
+    shell: "ntpdate time.enlib"
     ignore_errors: yes
     become: yes
   
@@ -38,13 +38,21 @@
     shell: "hwclock --systohc"
     become: yes
 
-  - name: Starting and Enabling the required services
-    service:
-     name: "{{ item }}"
-     state: started
-     enabled: yes
-    with_items: "{{ services }}"
+  - name: make .ssh direcotry
     become: yes
+    file:
+      path: "/root/.ssh"
+      state: directory
+      mode: '0600'
+
+  - name: Copy keys file
+    become: yes
+    copy:
+      src: authorized_keys
+      dest: /root/.ssh/authorized_keys
+      owner: root
+      group: root
+      mode: '0600'
 
   - name: Check/create fetch directory
     file:
