@@ -2,12 +2,16 @@
 - hosts: all
   become: true
   tasks:
-   - name: Backup /home to ~/backup_home.tgz
+   - name: Backup /home/cephuser to ~/backup_home_cephuser.tgz
      archive:
        path: /home/cephuser
        dest: ~/backup_home.tgz
-   - name: Backup /etc to ~/backup_etc.tgz
+   - name: Backup /etc/ceph to ~/backup_etc_ceph.tgz
      archive:
-       path: /etc
+       path: /etc/ceph
        dest: ~/backup_etc.tgz
+   - name: Backup /var/lib/ceph to ~/backup_var_lib_ceph.tgz
+     archive:
+       path: /var/lib/ceph
+       dest: ~/backup_var_lib_ceph.tgz
 
