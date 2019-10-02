@@ -1,17 +1,19 @@
 ---
 - hosts: all
   become: true
+  vars:
+     date: "{{ lookup('pipe', 'date +%Y%m%d-%H%M') }}"
   tasks:
    - name: Backup /home/cephuser to ~/backup_home_cephuser.tgz
      archive:
        path: /home/cephuser
-       dest: ~/backup_home.tgz
+       dest: "~/backup_home_{{ date }}.tgz"
    - name: Backup /etc/ceph to ~/backup_etc_ceph.tgz
      archive:
        path: /etc/ceph
-       dest: ~/backup_etc.tgz
+       dest: "~/backup_etc_{{ date }}.tgz"
    - name: Backup /var/lib/ceph to ~/backup_var_lib_ceph.tgz
      archive:
        path: /var/lib/ceph
-       dest: ~/backup_var_lib_ceph.tgz
+       dest: "~/backup_var_lib_ceph_{{ date }}.tgz"
 
